@@ -1,26 +1,42 @@
 <form #itemForm="ngForm" (ngSubmit)="submitForm(itemForm)">
-  <div *ngFor="let option of itemCardOptions; trackBy: getTrackIndex">
-    <label>
-      <span> size: {{ option.sizeId }} </span>
-      <input
-        type="checkbox"
-        [name]="'check-' + option.itemId + '-' + option.sizeId"
-        [(ngModel)]="option.checked"
-        (change)="togglePrice(option)"
-      />
-      <input
-        type="number"
-        [name]="'price-' + option.itemId + '-' + option.sizeId"
-        [(ngModel)]="option.price"
-        [disabled]="!option.checked"
-        [ngModelOptions]="{ updateOn: 'submit' }"
-      />
-    </label>
+  <div
+    [class]="{
+      'item-card-grid': true,
+      active: isActive
+    }"
+  >
+    <div
+      *ngFor="let option of itemCardOptions; trackBy: getTrackIndex"
+      class="item-card"
+    >
+      <div class="item-card-content">
+        <input
+          class="item-options-size"
+          type="checkbox"
+          [name]="'check-' + option.itemId + '-' + option.sizeId"
+          [(ngModel)]="option.checked"
+          (change)="togglePrice(option)"
+        />
+        <span>sizeId: {{ option.sizeId }}</span>
+        <input
+          class="item-options-price"
+          type="number"
+          [name]="'price-' + option.itemId + '-' + option.sizeId"
+          [(ngModel)]="option.price"
+          [disabled]="!option.checked"
+          [ngModelOptions]="{ updateOn: 'submit' }"
+        />
+      </div>
+    </div>
   </div>
-  <button type="submit">Submit</button>
-  <button type="button" (click)="undo(itemForm)">Undo</button>
+
+  <div class="item-options-actions">
+    <button class="btn submit" type="submit">Submit</button>
+    <app-undo-icon (click)="undo(itemForm)"></app-undo-icon>
+  </div>
 </form>
 
+<!--
 <pre>
   {{ itemForm.value | json }}
-</pre>
+</pre> -->
