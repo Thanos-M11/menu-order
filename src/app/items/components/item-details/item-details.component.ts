@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Item, Price} from '../../items.interface';
+import { Item, Price } from '../../items.interface';
 import { CardState, ItemCardOption } from '../../items.state';
 import { AsyncPipe, JsonPipe, NgFor } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -59,3 +59,9 @@ export class ItemDetailsComponent implements OnInit {
     return `${item.itemId}-${item.sizeId}`;
   };
 }
+
+// todo  update main card state
+// todo fix the initialization
+// todo fix togglePrice
+// todo add custom directives for styling
+// todo set a store similar to ngrx with reducers, selectors, actions, effects
