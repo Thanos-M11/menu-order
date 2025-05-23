@@ -1,5 +1,4 @@
-import { RouterOutlet } from '@angular/router';
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { JsonPipe } from '@angular/common';
 import {
   Component,
   DestroyRef,
@@ -10,15 +9,14 @@ import {
 } from '@angular/core';
 import { ItemDetailsComponent } from '../item-details/item-details.component';
 import { ItemCardComponent } from '../item-card/item-card.component';
-import { Item, Price, Size } from '../../items.interface';
+import { Price, Size } from '../../items.interface';
 import { ItemsService } from '../../items.service';
 import { ItemState } from '../../items.state';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-items-list',
-  imports: [JsonPipe, ItemCardComponent, ItemDetailsComponent, AsyncPipe],
+  imports: [JsonPipe, ItemCardComponent, ItemDetailsComponent],
   templateUrl: './items-list.component.html',
   styleUrl: './items-list.component.scss',
 })
@@ -27,7 +25,6 @@ export class ItemsListComponent implements OnInit {
   @Output() selectedItem = new EventEmitter<number>();
 
   itemSizes: Size[] = [];
-  // cardItemPrices: Price[] = [];
 
   constructor(
     private itemsService: ItemsService,
@@ -45,9 +42,12 @@ export class ItemsListComponent implements OnInit {
 
   getItemCardPrices(itemId: number): Price[] {
     let cardItemPrices: Price[] = [];
-    this.itemsService.getItemCardPrices$(itemId).subscribe({
-      next: (prices) => (cardItemPrices = prices),
-    });
+    this.itemsService
+      .getItemCardPrices$(itemId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (prices) => (cardItemPrices = prices),
+      });
     return cardItemPrices;
   }
 }

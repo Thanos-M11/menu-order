@@ -1,18 +1,22 @@
-<!-- <pre>
-  {{ itemState | json }}
-</pre> -->
 
 @for(item of itemState.items; track item.itemId){
-<app-item-card
+  <app-item-card
   [item]="item"
   (selectedItem)="onSelected($event)"
-></app-item-card>
-
+  ></app-item-card>
+  
 @if(itemState.cardState.currentItemId === item.itemId){
-
+  
 <app-item-details
-  [item]="item"
-  [cardState]="itemState.cardState"
+[item]="item"
+[cardState]="itemState.cardState"
   [itemCardPrices]="getItemCardPrices(item.itemId)"
-></app-item-details>
+  ></app-item-details>
 } }
+  
+
+
+
+<!-- <pre>
+    {{ itemState | json }}
+  </pre> -->

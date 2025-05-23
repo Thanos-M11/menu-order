@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Item, Price, Size } from '../../items.interface';
+import { Item, Price} from '../../items.interface';
 import { CardState, ItemCardOption } from '../../items.state';
 import { AsyncPipe, JsonPipe, NgFor } from '@angular/common';
-import { Form, FormsModule, NgForm } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-item-details',

@@ -3,13 +3,13 @@ import { Component, DestroyRef, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemsListComponent } from '../../components/items-list/items-list.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, Subscription } from 'rxjs';
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { JsonPipe } from '@angular/common';
 import { ItemState } from '../../items.state';
 
 @Component({
   selector: 'app-items-container',
-  imports: [ItemsListComponent, JsonPipe, AsyncPipe],
+  imports: [ItemsListComponent, JsonPipe],
   templateUrl: './items-container.component.html',
   styleUrl: './items-container.component.scss',
 })
