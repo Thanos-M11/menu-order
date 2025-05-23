@@ -1,0 +1,8 @@
+@import "../scss/variables";
+
+.container {
+  width: 1024px;
+  height: 100%;
+  padding: 1.5rem 2.5rem;
+  box-shadow: $shadow-box-main;
+}

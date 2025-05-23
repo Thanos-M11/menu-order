@@ -1,0 +1,29 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  font-size: 100%; // 62.5%
+}
+
+body {
+  box-sizing: border-box;
+  max-width: 1024px;
+  margin: 0 auto;
+  font-family: "Lato", sans-serif;
+  line-height: 1.7;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}

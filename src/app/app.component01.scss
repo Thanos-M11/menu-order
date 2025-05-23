@@ -1,0 +1,89 @@
+@import "../scss/variables";
+
+.container {
+  width: 1024px;
+  height: 100%;
+  padding: 1.5rem 2.5rem;
+  box-shadow: $shadow-box-main;
+
+  &-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  &-accordion {
+    margin-top: 1rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: $color-box-active-bg;
+
+    &-title {
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      font-size: 1.3rem;
+      font-weight: 500;
+      gap: 1rem;
+
+      & img {
+        background-color: transparent;
+      }
+    }
+
+    &-content {
+      &-size-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        & > section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 1rem;
+
+          & > label {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+
+            & > input[type="checkbox"] {
+              position: absolute;
+              opacity: 0;
+              z-index: 2;
+              margin-top: 1rem;
+              appearance: none;
+              width: 35px;
+              height: 35px;
+              background-color: $color-radio-btn-bg;
+              border-radius: 0.3rem;
+              cursor: pointer;
+
+              &:checked {
+                background-color: yellow;
+              }
+            }
+            & > img {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 35px;
+              height: 35px;
+              z-index: 1;
+            }
+          }
+
+          & > label {
+            display: block;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+          }
+        }
+      }
+      &-prices-group {
+        background-color: pink;
+      }
+    }
+  }
+}

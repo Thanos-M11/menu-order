@@ -1,0 +1,26 @@
+<form #itemForm="ngForm" (ngSubmit)="submitForm(itemForm)">
+  <div *ngFor="let option of itemCardOptions; trackBy: getTrackIndex">
+    <label>
+      <span> size: {{ option.sizeId }} </span>
+      <input
+        type="checkbox"
+        [name]="'check-' + option.itemId + '-' + option.sizeId"
+        [(ngModel)]="option.checked"
+        (change)="togglePrice(option)"
+      />
+      <input
+        type="number"
+        [name]="'price-' + option.itemId + '-' + option.sizeId"
+        [(ngModel)]="option.price"
+        [disabled]="!option.checked"
+        [ngModelOptions]="{ updateOn: 'submit' }"
+      />
+    </label>
+  </div>
+  <button type="submit">Submit</button>
+  <button type="button" (click)="undo(itemForm)">Undo</button>
+</form>
+
+<pre>
+  {{ itemForm.value | json }}
+</pre>
