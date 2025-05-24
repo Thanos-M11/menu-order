@@ -1,15 +1,15 @@
 import { ItemsService } from './../../items.service';
 import { Component, DestroyRef, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ItemsListComponent } from '../../components/items-list/items-list.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, Subscription } from 'rxjs';
-import { JsonPipe } from '@angular/common';
-import { ItemState } from '../../items.interface';
+import { AsyncPipe, JsonPipe } from '@angular/common';
+import { ItemCardOption, ItemState } from '../../items.interface';
+import { filter, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-items-container',
-  imports: [ItemsListComponent, JsonPipe],
+  imports: [ItemsListComponent, JsonPipe, AsyncPipe],
   templateUrl: './items-container.component.html',
   styleUrl: './items-container.component.scss',
 })
@@ -31,14 +31,28 @@ export class ItemsContainerComponent implements OnInit {
 
     this.itemsService.loadState();
     this.itemsService.state$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (st) => (this.state = st),
+      .pipe(
+        filter(
+          (state) =>
+            state.items.length > 0 &&
+            state.itemPrices.length > 0 &&
+            state.itemSizes.length > 0 &&
+            state.itemCardOptions.size > 0
+        )
+      )
+      .subscribe((state) => {
+        this.state = state;
+        console.log(state.itemCardOptions);
       });
   }
 
   handleSelectedItem(itemId: number) {
     this.itemsService.setCurrentItemId(itemId);
     this.itemsService.navigateTo([itemId.toString()], this.activatedRoute);
+  }
+
+  // only for testing Map in the DOM
+  getItemCardOptionsMap(): ItemCardOption[] {
+    return Array.from(this.state?.itemCardOptions.values() || []);
   }
 }

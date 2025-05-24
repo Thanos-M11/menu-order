@@ -1,8 +1,10 @@
+
+<!-- 
 @for(item of itemState.items; track item.itemId){
 
 <div class="card-wrapper">
   <div class="card-wrapper-title">
-    @if(itemState.cardState.currentItemId === item.itemId){
+    @if(itemState.selectedItemId === item.itemId){
     <app-keyboard-arrow-up></app-keyboard-arrow-up>
     } @else {
     <app-keyboard-arrow-down></app-keyboard-arrow-down>
@@ -14,18 +16,18 @@
     ></app-item-card>
   </div>
 
-  @if(itemState.cardState.currentItemId === item.itemId){
+  @if(itemState.selectedItemId === item.itemId){
 
+    
   <app-item-details
     [isActive]="true"
     [item]="item"
-    [cardState]="itemState.cardState"
-    [itemCardPrices]="getItemCardPrices(item.itemId)"
+    [itemCardOptions]="itemState.itemCardOptions"
   ></app-item-details>
   }
 </div>
-}
+} -->
 
-<!-- <pre>
+<pre>
     {{ itemState | json }}
-  </pre> -->
+  </pre>

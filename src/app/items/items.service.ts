@@ -15,7 +15,9 @@ import {
   forkJoin,
   map,
   Observable,
+  shareReplay,
   Subscription,
+  take,
   tap,
   throwError,
 } from 'rxjs';
@@ -33,9 +35,6 @@ export class ItemsService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   private errorSubject = new BehaviorSubject<string | null>(null);
   private selectedItemIdSubject = new BehaviorSubject<number | null>(null);
-  private itemCardOptionsSubject = new BehaviorSubject<
-    Map<string, ItemCardOption>
-  >(new Map());
 
   //   public observables item state
   private items$ = this.itemsSubject.asObservable();
@@ -44,7 +43,30 @@ export class ItemsService {
   private loading$ = this.loadingSubject.asObservable();
   private error$ = this.errorSubject.asObservable();
   private selectedItemId$ = this.selectedItemIdSubject.asObservable();
-  private itemCardOptions$ = this.itemCardOptionsSubject.asObservable();
+
+  private itemCardOptions$ = combineLatest([
+    this.itemPrices$,
+    this.itemSizes$,
+  ]).pipe(
+    map(([prices, sizes]) => {
+      const itemCardOptionsMap = new Map<string, ItemCardOption>();
+
+      prices.forEach((price: Price) => {
+        const key = `${price.itemId}-${price.sizeId}`;
+        const value: ItemCardOption = {
+          itemId: price.itemId,
+          sizeId: price.sizeId,
+          sizeName:
+            sizes.find((size) => size.sizeId === price.sizeId)?.name || '',
+          price: price.price,
+          checked: true,
+        };
+        itemCardOptionsMap.set(key, value);
+      });
+      return itemCardOptionsMap;
+    }),
+    shareReplay(1)
+  );
 
   public state$: Observable<ItemState> = combineLatest([
     this.items$,
@@ -73,7 +95,8 @@ export class ItemsService {
         selectedItemId,
         itemCardOptions,
       })
-    )
+    ),
+    shareReplay(1)
   );
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -84,7 +107,6 @@ export class ItemsService {
       items: this.readItems$(),
       itemPrices: this.readPrices$(),
       itemSizes: this.readSizes$(),
-      itemCardOptions: this.readItemCardOptionsMap$(),
     })
       .pipe(
         tap(() => {
@@ -114,31 +136,6 @@ export class ItemsService {
     return (
       activatedRoute.firstChild?.params.pipe(takeUntilDestroyed(destroyRef)) ??
       EMPTY
-    );
-  }
-
-  private readItemCardOptionsMap$(): Observable<Map<string, ItemCardOption>> {
-    return combineLatest([this.itemPrices$, this.itemSizes$]).pipe(
-      map(([prices, sizes]) => {
-        const itemCardOptionsMap = new Map<string, ItemCardOption>();
-
-        prices.forEach((price: Price) => {
-          const key = `${price.itemId}-${price.sizeId}`;
-          const value: ItemCardOption = {
-            itemId: price.itemId,
-            sizeId: price.sizeId,
-            sizeName:
-              sizes.find((size) => size.sizeId === price.sizeId)?.name || '',
-            price: price.price,
-            checked: true,
-          };
-          itemCardOptionsMap.set(key, value);
-        });
-        return itemCardOptionsMap;
-      }),
-      tap((optionsMap: Map<string, ItemCardOption>) =>
-        this.itemCardOptionsSubject.next(optionsMap)
-      )
     );
   }
 
