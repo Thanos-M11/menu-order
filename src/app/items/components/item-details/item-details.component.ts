@@ -67,4 +67,3 @@ export class ItemDetailsComponent implements OnInit {
 // todo fix the initialization
 // todo fix togglePrice
 // todo add custom directives for styling
-// todo set a store similar to ngrx with reducers, selectors, actions, effects

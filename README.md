@@ -32,3 +32,32 @@ Given the data and their models:
 6. The relations between the data use a classic relational approach (`id` based)
 7. The undo function is performed **per item** and should work for _any item list length_
 8. Try to use best practices as you would always do. Don't focus only on functionality or styling only
+
+## Data Flow
+
+![Data flow](./public/dataFlow.png)
+
+### Component Responsibilities
+
+#### `ItemsContainerComponent`
+
+- subscibes to services with observables,
+- handles navigation,
+- dispatches actions,
+- passes state to child,
+- listens to child events
+
+#### `ItemsListComponent`
+
+- accepts data via `@Input`,
+- emits events via `@Output`,
+- no state management,
+- no dispatching,
+- no router interaction
+
+#### `ItemCardComponent`
+
+- receives `itemState`
+- emits `selectedItem`
+
+#### `ItemDetailsComponent`

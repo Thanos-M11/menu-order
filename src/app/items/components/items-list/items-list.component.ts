@@ -32,7 +32,7 @@ export class ItemsListComponent implements OnInit {
   @Input({ required: true }) itemState!: ItemState;
   @Output() selectedItem = new EventEmitter<number>();
 
-  itemSizes: Size[] = [];
+  // itemSizes: Size[] = [];
 
   constructor(
     private itemsService: ItemsService,
@@ -41,7 +41,7 @@ export class ItemsListComponent implements OnInit {
 
   ngOnInit() {
     const itemId = this.itemState.cardState.currentItemId as number;
-    this.itemSizes = this.itemState.itemSizes;
+    // this.itemSizes = this.itemState.itemSizes;
   }
 
   onSelected(itemOption: number) {
