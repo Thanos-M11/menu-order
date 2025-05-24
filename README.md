@@ -41,7 +41,10 @@ Given the data and their models:
 
 #### `ItemsContainerComponent`
 
-- subscibes to services with observables,
+- subscibes to `ActivatedRouteFirstChild`
+- subscribes to `ItemsService`
+  - loads state
+  - owns state
 - handles navigation,
 - dispatches actions,
 - passes state to child,
@@ -49,11 +52,14 @@ Given the data and their models:
 
 #### `ItemsListComponent`
 
-- accepts data via `@Input`,
-- emits events via `@Output`,
+- accepts `ItemState` via `@Input`,
+- emits `selectedItem` via `@Output`,
 - no state management,
 - no dispatching,
 - no router interaction
+- passes `item` to `ItemCardComponent`
+- listens for `selectedItem` form `ItemCardComponent`
+- passes `item`,`isActive`,`cardState`
 
 #### `ItemCardComponent`
 

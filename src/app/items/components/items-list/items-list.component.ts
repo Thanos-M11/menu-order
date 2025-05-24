@@ -48,6 +48,7 @@ export class ItemsListComponent implements OnInit {
     this.selectedItem.emit(itemOption);
   }
 
+  // todo move method to service
   getItemCardPrices(itemId: number): Price[] {
     let cardItemPrices: Price[] = [];
     this.itemsService
