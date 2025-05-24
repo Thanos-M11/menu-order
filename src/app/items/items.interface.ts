@@ -13,3 +13,15 @@ export interface Price {
   sizeId: number;
   price: number;
 }
+
+export type ItemCardOption = Price & { sizeName: string; checked: boolean };
+
+export interface ItemState {
+  items: Item[];
+  itemSizes: Size[];
+  itemPrices: Price[];
+  loading: boolean;
+  error: string | null;
+  selectedItemId: number | null;
+  itemCardOptions: Map<string, ItemCardOption>;
+}

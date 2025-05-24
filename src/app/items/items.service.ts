@@ -1,17 +1,26 @@
-import { Injectable } from '@angular/core';
-import { Item, Price, Size } from './items.interface';
+import { DestroyRef, Injectable } from '@angular/core';
+import {
+  Item,
+  ItemCardOption,
+  ItemState,
+  Price,
+  Size,
+} from './items.interface';
 import { HttpClient } from '@angular/common/http';
 import {
   BehaviorSubject,
   catchError,
   combineLatest,
+  EMPTY,
   forkJoin,
   map,
   Observable,
+  Subscription,
   tap,
   throwError,
 } from 'rxjs';
-import { ItemCardOption, ItemState } from './items.state';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class ItemsService {
@@ -23,56 +32,51 @@ export class ItemsService {
   private itemSizesSubject = new BehaviorSubject<Size[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
   private errorSubject = new BehaviorSubject<string | null>(null);
-  private currentItemIdSubject = new BehaviorSubject<number | null>(null);
-  private currentItemCardOptionsSubject = new BehaviorSubject<ItemCardOption[]>(
-    []
-  );
+  private selectedItemIdSubject = new BehaviorSubject<number | null>(null);
+  private itemCardOptionsSubject = new BehaviorSubject<
+    Map<string, ItemCardOption>
+  >(new Map());
 
   //   public observables item state
-  public items$ = this.itemsSubject.asObservable();
-  public itemPrices$ = this.itemPricesSubject.asObservable();
-  public itemSizes$ = this.itemSizesSubject.asObservable();
-  public loading$ = this.loadingSubject.asObservable();
-  public error$ = this.errorSubject.asObservable();
-
-  // public observables item card
-  public currentItemId$ = this.currentItemIdSubject.asObservable();
-  public currentItemCardOptions$ =
-    this.currentItemCardOptionsSubject.asObservable();
+  private items$ = this.itemsSubject.asObservable();
+  private itemPrices$ = this.itemPricesSubject.asObservable();
+  private itemSizes$ = this.itemSizesSubject.asObservable();
+  private loading$ = this.loadingSubject.asObservable();
+  private error$ = this.errorSubject.asObservable();
+  private selectedItemId$ = this.selectedItemIdSubject.asObservable();
+  private itemCardOptions$ = this.itemCardOptionsSubject.asObservable();
 
   public state$: Observable<ItemState> = combineLatest([
     this.items$,
-    this.itemPrices$,
     this.itemSizes$,
+    this.itemPrices$,
     this.loading$,
     this.error$,
-    this.currentItemId$,
-    this.currentItemCardOptions$,
+    this.selectedItemId$,
+    this.itemCardOptions$,
   ]).pipe(
     map(
       ([
         items,
-        itemPrices,
         itemSizes,
+        itemPrices,
         loading,
         error,
-        currentItemId,
-        currentItemCardOptions,
+        selectedItemId,
+        itemCardOptions,
       ]) => ({
         items,
-        itemPrices,
         itemSizes,
+        itemPrices,
         loading,
         error,
-        cardState: {
-          currentItemId,
-          currentItemCardOptions,
-        },
+        selectedItemId,
+        itemCardOptions,
       })
     )
   );
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   public loadState(): void {
     this.loadingSubject.next(true);
@@ -80,6 +84,7 @@ export class ItemsService {
       items: this.readItems$(),
       itemPrices: this.readPrices$(),
       itemSizes: this.readSizes$(),
+      itemCardOptions: this.readItemCardOptionsMap$(),
     })
       .pipe(
         tap(() => {
@@ -95,43 +100,45 @@ export class ItemsService {
   }
 
   setCurrentItemId(itemId: number): void {
-    this.currentItemIdSubject.next(itemId);
+    this.selectedItemIdSubject.next(itemId);
   }
 
-  getPriceByItemAndBySize$(
-    itemId: number,
-    sizeId: number
-  ): Observable<number | undefined> {
-    return this.itemPrices$.pipe(
-      map(
-        (prices: Price[]) =>
-          prices.find(
-            (price) => price.itemId === itemId && price.sizeId === sizeId
-          )?.price
+  navigateTo(path: string[], route?: ActivatedRoute): void {
+    this.router.navigate(path, { relativeTo: route });
+  }
+
+  getRouteParams$(
+    activatedRoute: ActivatedRoute,
+    destroyRef: DestroyRef
+  ): Observable<Params> {
+    return (
+      activatedRoute.firstChild?.params.pipe(takeUntilDestroyed(destroyRef)) ??
+      EMPTY
+    );
+  }
+
+  private readItemCardOptionsMap$(): Observable<Map<string, ItemCardOption>> {
+    return combineLatest([this.itemPrices$, this.itemSizes$]).pipe(
+      map(([prices, sizes]) => {
+        const itemCardOptionsMap = new Map<string, ItemCardOption>();
+
+        prices.forEach((price: Price) => {
+          const key = `${price.itemId}-${price.sizeId}`;
+          const value: ItemCardOption = {
+            itemId: price.itemId,
+            sizeId: price.sizeId,
+            sizeName:
+              sizes.find((size) => size.sizeId === price.sizeId)?.name || '',
+            price: price.price,
+            checked: true,
+          };
+          itemCardOptionsMap.set(key, value);
+        });
+        return itemCardOptionsMap;
+      }),
+      tap((optionsMap: Map<string, ItemCardOption>) =>
+        this.itemCardOptionsSubject.next(optionsMap)
       )
-    );
-  }
-
-  getItemCardPrices$(itemId: number): Observable<Price[]> {
-    return this.itemPrices$.pipe(
-      map((prices: Price[]) =>
-        prices.filter((price) => price.itemId === itemId)
-      ),
-      tap((filteredPrices: Price[]) => {
-        const itemCardOptions: ItemCardOption[] = filteredPrices.map(
-          (price) => ({
-            ...price,
-            checked: false,
-          })
-        );
-        this.currentItemCardOptionsSubject.next(itemCardOptions);
-      })
-    );
-  }
-
-  getSizeName$(sizeId: number): Observable<Size | undefined> {
-    return this.itemSizes$.pipe(
-      map((sizes: Size[]) => sizes.find((size: Size) => size.sizeId === sizeId))
     );
   }
 
