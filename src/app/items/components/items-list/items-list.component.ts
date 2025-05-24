@@ -1,18 +1,10 @@
 import { JsonPipe } from '@angular/common';
-import {
-  Component,
-  DestroyRef,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ItemDetailsComponent } from '../item-details/item-details.component';
 import { ItemCardComponent } from '../item-card/item-card.component';
-import { ItemsService } from '../../items.service';
 import { KeyboardArrowDownComponent } from '../../../shared/components/icons/keyboard-arrow-down/keyboard-arrow-down.component';
 import { KeyboardArrowUpComponent } from '../../../shared/components/icons/keyboard-arrow-up/keyboard-arrow-up.component';
-import { ItemState } from '../../items.interface';
+import { ItemCardOption, ItemState } from '../../items.interface';
 
 @Component({
   selector: 'app-items-list',
@@ -27,21 +19,28 @@ import { ItemState } from '../../items.interface';
   styleUrl: './items-list.component.scss',
 })
 export class ItemsListComponent implements OnInit {
-  @Input({ required: true }) itemState!: ItemState;
+  @Input({ required: true }) state!: ItemState;
   @Output() selectedItem = new EventEmitter<number>();
 
+  constructor() {}
 
-  constructor(
-    private itemsService: ItemsService,
-    private destroyRef: DestroyRef
-  ) {}
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onSelected(itemOption: number) {
     this.selectedItem.emit(itemOption);
   }
 
+  getFilteredItemCardMap(itemId: number): Map<string, ItemCardOption> {
+    return new Map(
+      Array.from(this.state.itemCardOptions.entries()).filter(([key, _]) =>
+        key.startsWith(`${itemId}-`)
+      )
+    );
+  }
 
+  // getFilteredItemCardMap(itemId: number) {
+  //   return Array.from(this.state.itemCardOptions.entries()).filter(([key, _]) =>
+  //     key.startsWith(`${itemId}-`)
+  //   );
+  // }
 }

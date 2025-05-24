@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Item, Price } from '../../items.interface';
+import { Item, ItemCardOption, Price } from '../../items.interface';
 import { AsyncPipe, JsonPipe, NgFor } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UndoIconComponent } from '../../../shared/components/icons/undo-icon/undo-icon.component';
@@ -12,22 +12,21 @@ import { UndoIconComponent } from '../../../shared/components/icons/undo-icon/un
 })
 export class ItemDetailsComponent implements OnInit {
   @Input({ required: true }) item!: Item;
+  @Input({ required: true }) private itemCardMapOptions!: Map<
+    string,
+    ItemCardOption
+  >;
   @Input() isActive!: Boolean;
-  
 
-  // initialItemCardOptions: ItemCardOption[] = [];
-  // itemCardOptions: ItemCardOption[] = [];
+  itemCardOptions!: { [key: string]: ItemCardOption }[];
 
   ngOnInit() {
-    // this.initialItemCardOptions = this.cardState.currentItemCardOptions.map(
-    //   (option) => ({
-    //     ...option,
-    //   })
-    // );
-    // this.itemCardOptions = this.itemCardPrices.map((price) => ({
-    //   ...price,
-    //   checked: true,
-    // }));
+    this.itemCardOptions = Array.from(this.itemCardMapOptions.entries()).map(
+      ([key, value]) => ({
+        key: value,
+      })
+    );
+    console.log(this.itemCardMapOptions);
   }
 
   togglePrice() {

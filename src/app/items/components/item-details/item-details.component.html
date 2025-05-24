@@ -7,7 +7,7 @@
     }"
   >
     <div
-      *ngFor="let option of itemCardOptions; trackBy: getTrackIndex"
+      *ngFor="let [key, value] of itemCardOptions; trackBy: key "
       class="item-card"
     >
       <div class="item-card-content">
@@ -37,7 +37,8 @@
   </div>
 </form> -->
 
+<!-- 
 <pre>
   item: {{ item | json }}
   isActive" {{ isActive | json }}
-</pre>
+</pre> -->

@@ -2,10 +2,9 @@ import { ItemsService } from './../../items.service';
 import { Component, DestroyRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ItemsListComponent } from '../../components/items-list/items-list.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ItemCardOption, ItemState } from '../../items.interface';
-import { filter, Observable } from 'rxjs';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-items-container',
