@@ -81,4 +81,33 @@ Given the data and their models:
 - submits a form
 - resets a form
 - this version uses the template driven form approach with two way data binding and `ngModel`
--
+
+### Services
+
+#### `ItemsService`
+
+- uses private `BehaviorSubjects`
+  - `itemsSubject`
+  - `itemPricesSubject`
+  - `itemSizesSubject`
+  - `loadingSubject`
+  - `errorSubject`
+  - `selectedItemIdSubject`
+- uses `CombineLatest` operator to combine values from `itemPrices` and `itemSizes` and returns a map with O(1) of type `string: ItemCardOption` to be passed to the `state` via `ItemContainer`
+  - as unique map key uses the concat of `itemId`-`sizeId`
+  - uses `ShareReplay(1)` to cache the last emitted value so that new subscribers instantly receive it without waiting for the source Observable to emit again.
+- provides the whole `state` of items as observable that is a result of using the `CombineLatest` operator that:
+  - waits for all of the observables to emit at least one value
+  - as soon as any of te observable emits a new value it emits a combined array of the latest values from each observable.
+- provides `loadState` that uses a `forkJoin` operator:
+  - it runs 3 observables in parallel `readItems$`, `readPrices$`, `readSizes$`,
+  - wait for all of them to complete
+  - emits one single combined value that containes the last emitted value from each of them and only once.
+- provides public methods:
+  - `setCurrentItemId`
+  - `navigateTo` - controls navigation programmaticaly
+  - `getRouteParams$`
+- uses private methods to run the `loadState`
+  - `readItems$`
+  - `readPrices$`
+  - `readSizes$`
