@@ -5,15 +5,27 @@ import {
   Input,
   OnInit,
   Output,
+  ViewEncapsulation,
 } from '@angular/core';
 import { Item, ItemCardOption, Price } from '../../items.interface';
 import { AsyncPipe, JsonPipe, NgFor } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UndoIconComponent } from '../../../shared/components/icons/undo-icon/undo-icon.component';
+import { DollarCurrencyWrapperDirective } from '../../../shared/directives/dollar-currency-wrapper.directive';
+import { NumberInputComponent } from '../../../shared/components/number-input/number-input.component';
+import { CheckboxInputComponent } from '../../../shared/components/checkbox-input/checkbox-input.component';
 
 @Component({
   selector: 'app-item-details',
-  imports: [AsyncPipe, JsonPipe, NgFor, FormsModule, UndoIconComponent],
+  imports: [
+    AsyncPipe,
+    JsonPipe,
+    NgFor,
+    FormsModule,
+    UndoIconComponent,
+    NumberInputComponent,
+    CheckboxInputComponent,
+  ],
   templateUrl: './item-details.component.html',
   styleUrl: './item-details.component.scss',
 })

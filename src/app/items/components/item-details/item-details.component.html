@@ -8,21 +8,23 @@
     @for(option of itemCardOptions; track option['key']){
     <div class="item-card">
       <div class="item-card-content">
-        <input
-          class="item-options-size"
-          type="checkbox"
-          [name]="'check-' + option.value.sizeName"
-          [(ngModel)]="option.value.checked"
-          (change)="togglePrice(option)"
-        />
-        <span>{{ option.value.sizeName }}</span>
-        <input
-          class="item-options-price"
-          type="number"
-          [name]="'price-' + option['key']"
-          [(ngModel)]="option.value.price"
-          [disabled]="!option.value.checked"
-        />
+        <app-checkbox-input [label]="option.value.sizeName">
+          <input
+            type="checkbox"
+            [name]="'check-' + option.value.sizeName"
+            [(ngModel)]="option.value.checked"
+            (change)="togglePrice(option)"
+          />
+        </app-checkbox-input>
+
+        <app-number-input>
+          <input
+            type="number"
+            [name]="'price-' + option['key']"
+            [(ngModel)]="option.value.price"
+            [disabled]="!option.value.checked"
+          />
+        </app-number-input>
       </div>
     </div>
     }

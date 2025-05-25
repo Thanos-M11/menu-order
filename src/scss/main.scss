@@ -17,7 +17,7 @@ html {
 
 body {
   box-sizing: border-box;
-  max-width: 1024px;
+  max-width: 600px;
   margin: 0 auto;
   font-family: "Lato", sans-serif;
   line-height: 1.7;
@@ -26,4 +26,10 @@ body {
 a {
   text-decoration: none;
   color: inherit;
+}
+
+.dollar-wrapper {
+  height: 2rem;
+  border: 1px solid red;
+  background-color: yellowgreen;
 }

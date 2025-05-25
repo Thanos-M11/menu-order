@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 
 @Directive({
-  selector: '[appDollarWrapper]',
+  selector: 'input[appDollarWrapper]',
 })
 export class DollarCurrencyWrapperDirective implements OnInit {
   private element = inject(ElementRef);
