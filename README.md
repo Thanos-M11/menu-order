@@ -46,19 +46,19 @@ Given the data and their models:
   - loads state
   - owns state
 - handles navigation,
-- dispatches actions,
 - passes state to child,
-- listens to child events
+- listens to child events `selectedItem`, `selectedItemCardOptions`
+- handles events.
+- dispatches actions,
 
 #### `ItemsListComponent`
 
 - accepts `ItemState` via `@Input`,
 - emits `selectedItem` via `@Output`,
-- no state management,
-- no dispatching,
-- no router interaction
+- emits `selectedItemCardOptions` via `@Output`,
 - passes `item` to `ItemCardComponent`
 - listens for `selectedItem` form `ItemCardComponent`
+- listens for `selectedItemCardOptions` from `ItemDetailsComponent`
 - passes `item`,`isActive`,`getFilteredItemCardMap(itemId)` to `ItemDetailsComponent`
 
 #### `ItemCardComponent`
