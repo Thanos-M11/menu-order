@@ -1,5 +1,10 @@
 <form #itemForm="ngForm" (ngSubmit)="submitForm(itemForm)">
-  <div class="card-content">
+  <div
+    [class]="{
+      'card-content': true,
+      active: isActive
+    }"
+  >
     @for(option of itemCardOptions; track option['key']){
 
     <div>
