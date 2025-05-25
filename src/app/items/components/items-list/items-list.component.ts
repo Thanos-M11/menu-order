@@ -21,13 +21,22 @@ import { ItemCardOption, ItemState } from '../../items.interface';
 export class ItemsListComponent implements OnInit {
   @Input({ required: true }) state!: ItemState;
   @Output() selectedItem = new EventEmitter<number>();
+  @Output() selectedItemCardOptions = new EventEmitter<
+    { key: string; value: ItemCardOption }[]
+  >();
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.state.items);
+  }
 
   onSelected(itemOption: number) {
     this.selectedItem.emit(itemOption);
+  }
+
+  onSelectedItemCardOptions(options: { key: string; value: ItemCardOption }[]) {
+    this.selectedItemCardOptions.emit(options);
   }
 
   getFilteredItemCardMap(itemId: number): Map<string, ItemCardOption> {
@@ -37,10 +46,4 @@ export class ItemsListComponent implements OnInit {
       )
     );
   }
-
-  // getFilteredItemCardMap(itemId: number) {
-  //   return Array.from(this.state.itemCardOptions.entries()).filter(([key, _]) =>
-  //     key.startsWith(`${itemId}-`)
-  //   );
-  // }
 }

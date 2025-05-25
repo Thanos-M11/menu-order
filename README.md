@@ -59,11 +59,26 @@ Given the data and their models:
 - no router interaction
 - passes `item` to `ItemCardComponent`
 - listens for `selectedItem` form `ItemCardComponent`
-- passes `item`,`isActive`,`cardState`
+- passes `item`,`isActive`,`getFilteredItemCardMap(itemId)` to `ItemDetailsComponent`
 
 #### `ItemCardComponent`
 
-- receives `itemState`
-- emits `selectedItem`
+- accepts `item` via `@Input`
+- emits `selectedItem` via `@Output`
+- handles selected item event
 
 #### `ItemDetailsComponent`
+
+- receives `item` via `@Input`
+- receives a map `itemCardMapOptions` via `@Input`
+- receives `isActive` via `@Input`
+- emits `selectedItemCardOptions` via `@Output`
+- clones itemCardOptions to be used when user changes values
+- stores users values on local storage
+- uses local storage to set the initial `itemCardOptions`
+- renders a form
+- toggles price values on change
+- submits a form
+- resets a form
+- this version uses the template driven form approach with two way data binding and `ngModel`
+-

@@ -20,6 +20,7 @@
     [isActive]="true"
     [item]="item"
     [itemCardMapOptions]="getFilteredItemCardMap(item.itemId)"
+    (selectedItemCardOptions)="onSelectedItemCardOptions($event)"
   ></app-item-details>
   }
 </div>
@@ -27,6 +28,5 @@
 
 <!-- <pre> -->
 <!-- state.items: {{ state.items | json }} -->
-<!-- itemCard {{ getFilteredItemCardMap(1) | json }} -->
 
 <!-- </pre> -->

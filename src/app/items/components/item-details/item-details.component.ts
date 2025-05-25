@@ -21,6 +21,9 @@ export class ItemDetailsComponent implements OnInit {
   @Input({ required: true }) item!: Item;
   @Input({ required: true }) itemCardMapOptions!: Map<string, ItemCardOption>;
   @Input() isActive!: Boolean;
+  @Output() selectedItemCardOptions = new EventEmitter<
+    { key: string; value: ItemCardOption }[]
+  >();
 
   itemCardOptions!: { key: string; value: ItemCardOption }[];
   itemCardOptionsInitial!: { key: string; value: ItemCardOption }[];
@@ -66,6 +69,7 @@ export class ItemDetailsComponent implements OnInit {
         this.item.itemId.toString(),
         JSON.stringify(this.itemCardOptions)
       );
+      this.selectedItemCardOptions.emit(this.itemCardOptions);
     }
   }
 

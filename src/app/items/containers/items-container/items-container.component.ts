@@ -41,7 +41,6 @@ export class ItemsContainerComponent implements OnInit {
       )
       .subscribe((state) => {
         this.state = state;
-        console.log(state.itemCardOptions);
       });
   }
 
@@ -50,8 +49,17 @@ export class ItemsContainerComponent implements OnInit {
     this.itemsService.navigateTo([itemId.toString()], this.activatedRoute);
   }
 
-  // only for testing Map in the DOM
-  getItemCardOptionsMap(): ItemCardOption[] {
-    return Array.from(this.state?.itemCardOptions.values() || []);
+  handleSelectedItemCardOptions(
+    options: { key: string; value: ItemCardOption }[]
+  ): void {
+    console.log('Handle Selected Item Card Option', options);
+    // set a service to handle this per user !!!
+    // dispatch action in the service
+    // this.itemsService.updateUsersItemCardOptions(options)
   }
+
+  // // only for testing Map in the DOM
+  // getItemCardOptionsMap(): ItemCardOption[] {
+  //   return Array.from(this.state?.itemCardOptions.values() || []);
+  // }
 }
