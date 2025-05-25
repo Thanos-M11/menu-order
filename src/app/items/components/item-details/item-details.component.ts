@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Item, ItemCardOption, Price } from '../../items.interface';
 import { AsyncPipe, JsonPipe, NgFor } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -12,53 +19,69 @@ import { UndoIconComponent } from '../../../shared/components/icons/undo-icon/un
 })
 export class ItemDetailsComponent implements OnInit {
   @Input({ required: true }) item!: Item;
-  @Input({ required: true }) private itemCardMapOptions!: Map<
-    string,
-    ItemCardOption
-  >;
+  @Input({ required: true }) itemCardMapOptions!: Map<string, ItemCardOption>;
   @Input() isActive!: Boolean;
 
-  itemCardOptions!: { [key: string]: ItemCardOption }[];
+  itemCardOptions!: { key: string; value: ItemCardOption }[];
+  itemCardOptionsInitial!: { key: string; value: ItemCardOption }[];
 
   ngOnInit() {
     this.itemCardOptions = Array.from(this.itemCardMapOptions.entries()).map(
       ([key, value]) => ({
-        key: value,
+        key,
+        value,
       })
     );
-    console.log(this.itemCardMapOptions);
-  }
 
-  togglePrice() {
-    // if (!option.checked) {
-    //   option.price = 0;
-    // } else {
-    //   const initialPrice = this.initialItemCardOptions.find(
-    //     (price) =>
-    //       price.itemId === option.itemId && price.sizeId === option.sizeId
-    //   );
-    //   if (initialPrice) {
-    //     option.price = initialPrice.price;
-    //   }
-    // }
-  }
+    this.itemCardOptionsInitial = this.getClonedItemCardOptions(
+      this.itemCardOptions
+    );
 
-  submitForm(form: NgForm) {
-    if (form.valid) {
-      console.log(form.value);
+    const storedItemCardOptions = localStorage.getItem(
+      this.item.itemId.toString()
+    );
+    if (storedItemCardOptions) {
+      const parsedItemCardOptions = JSON.parse(storedItemCardOptions);
+      this.itemCardOptions = parsedItemCardOptions;
     }
   }
 
-  undo(form: NgForm) {
-    form.resetForm();
+  togglePrice(enteredOption: { key: string; value: ItemCardOption }) {
+    if (!enteredOption.value.checked) {
+      enteredOption.value.price = 0;
+    } else {
+      const initialOption = this.itemCardOptionsInitial.find(
+        (option) => option.key === enteredOption.key
+      );
+
+      if (initialOption) {
+        enteredOption.value.price = initialOption.value.price;
+      }
+    }
   }
 
-  // getTrackIndex = (index: number, item: { itemId: number; sizeId: number }) => {
-  //   return `${item.itemId}-${item.sizeId}`;
-  // };
-}
+  submitForm(form: NgForm): void {
+    if (form.valid) {
+      localStorage.setItem(
+        this.item.itemId.toString(),
+        JSON.stringify(this.itemCardOptions)
+      );
+    }
+  }
 
-// todo  update main card state
-// todo fix the initialization
-// todo fix togglePrice
-// todo add custom directives for styling
+  undo(form: NgForm): void {
+    this.itemCardOptions = this.getClonedItemCardOptions(
+      this.itemCardOptionsInitial
+    );
+
+    // todo
+    form.resetForm(this.itemCardOptions);
+  }
+
+  getClonedItemCardOptions(options: { key: string; value: ItemCardOption }[]): {
+    key: string;
+    value: ItemCardOption;
+  }[] {
+    return JSON.parse(JSON.stringify(options));
+  }
+}

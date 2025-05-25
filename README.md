@@ -24,14 +24,14 @@ Given the data and their models:
 
 ## Notes
 
-1. You can use any of the recent Angular versions (at least v15+)
-2. Avoid using any 3d-party dependencies, like state management tools, component frameworks, or CSS libraries. Write your own styles to match the mockup design
-3. Try to make the app accessible based on the [WCAG 2.1 (AA) standards](https://www.w3.org/WAI/standards-guidelines/wcag/)
-4. You can import or copy the data from `data.ts` file any way you want
-5. You can use any of the available browser features/APIs to persist data between page reloads
-6. The relations between the data use a classic relational approach (`id` based)
-7. The undo function is performed **per item** and should work for _any item list length_
-8. Try to use best practices as you would always do. Don't focus only on functionality or styling only
+- [x] 1. You can use any of the recent Angular versions (at least v15+)
+- [x] 2. Avoid using any 3d-party dependencies, like state management tools, component frameworks, or CSS libraries. Write your own styles to match the mockup design
+- [ ] 3. Try to make the app accessible based on the [WCAG 2.1 (AA) standards](https://www.w3.org/WAI/standards-guidelines/wcag/)
+- [x] 4. You can import or copy the data from `data.ts` file any way you want |-> **converted to:**`data.json`
+- [x] 5. You can use any of the available browser features/APIs to persist data between page reloads |-> **used `HttpClient` DI**
+- [x] 6. The relations between the data use a classic relational approach (`id` based)
+- [x] 7. The undo function is performed **per item** and should work for _any item list length_
+- [x] 8. Try to use best practices as you would always do. Don't focus only on functionality or styling only
 
 ## Data Flow
 

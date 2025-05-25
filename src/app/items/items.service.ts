@@ -16,8 +16,6 @@ import {
   map,
   Observable,
   shareReplay,
-  Subscription,
-  take,
   tap,
   throwError,
 } from 'rxjs';
