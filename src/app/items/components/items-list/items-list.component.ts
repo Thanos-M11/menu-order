@@ -5,6 +5,7 @@ import { ItemCardComponent } from '../item-card/item-card.component';
 import { KeyboardArrowDownComponent } from '../../../shared/components/icons/keyboard-arrow-down/keyboard-arrow-down.component';
 import { KeyboardArrowUpComponent } from '../../../shared/components/icons/keyboard-arrow-up/keyboard-arrow-up.component';
 import { ItemCardOption, ItemState } from '../../items.interface';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-items-list',
@@ -14,6 +15,7 @@ import { ItemCardOption, ItemState } from '../../items.interface';
     ItemDetailsComponent,
     KeyboardArrowDownComponent,
     KeyboardArrowUpComponent,
+    CardComponent,
   ],
   templateUrl: './items-list.component.html',
   styleUrl: './items-list.component.scss',

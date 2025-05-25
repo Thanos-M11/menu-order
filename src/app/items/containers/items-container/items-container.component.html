@@ -1,10 +1,10 @@
-<app-items-list
-  [state]="state"
-  (selectedItem)="handleSelectedItem($event)"
-  (selectedItemCardOptions)="handleSelectedItemCardOptions($event)"
-></app-items-list>
-
-<!-- 
-<pre>
-  container: state {{ getItemCardOptionsMap() | json }}
-</pre> -->
+<div class="container">
+  <header>
+    <h2>Pizza</h2>
+  </header>
+  <app-items-list
+    [state]="state"
+    (selectedItem)="handleSelectedItem($event)"
+    (selectedItemCardOptions)="handleSelectedItemCardOptions($event)"
+  ></app-items-list>
+</div>

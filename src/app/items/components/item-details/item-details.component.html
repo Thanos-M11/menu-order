@@ -1,46 +1,30 @@
 <form #itemForm="ngForm" (ngSubmit)="submitForm(itemForm)">
-  <div
-    [class]="{
-      'item-card-grid': true,
-      active: isActive
-    }"
-  >
+  <div class="card-content">
     @for(option of itemCardOptions; track option['key']){
-    <div class="item-card">
-      <div class="item-card-content">
-        <app-checkbox-input [label]="option.value.sizeName">
-          <input
-            type="checkbox"
-            [name]="'check-' + option.value.sizeName"
-            [(ngModel)]="option.value.checked"
-            (change)="togglePrice(option)"
-          />
-        </app-checkbox-input>
 
-        <app-number-input>
-          <input
-            type="number"
-            [name]="'price-' + option['key']"
-            [(ngModel)]="option.value.price"
-            [disabled]="!option.value.checked"
-          />
-        </app-number-input>
-      </div>
+    <div>
+      <app-checkbox-input [label]="option.value.sizeName">
+        <input
+          type="checkbox"
+          [name]="'check-' + option.value.sizeName"
+          [(ngModel)]="option.value.checked"
+          (change)="togglePrice(option)"
+        />
+      </app-checkbox-input>
+
+      <app-number-input>
+        <input
+          type="number"
+          [name]="'price-' + option['key']"
+          [(ngModel)]="option.value.price"
+          [disabled]="!option.value.checked"
+        />
+      </app-number-input>
     </div>
     }
   </div>
-  <div class="item-options-actions">
+  <div class="card-content-actions">
     <button class="btn submit" type="submit">Submit</button>
     <app-undo-icon (click)="undo(itemForm)"></app-undo-icon>
   </div>
 </form>
-
-<pre>
-  <!-- itemCardOptions: {{ itemCardOptions | json }} -->
-  <!-- initialCardOptions: {{ itemCardOptionsInitial | json }} -->
-  <!-- cloned: {{ getClonedItemCardOptions(itemCardOptions) | json }} -->
-</pre>
-
-<pre>
-  <!-- {{ itemForm.value | json }} -->
-</pre>

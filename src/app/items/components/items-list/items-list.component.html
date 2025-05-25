@@ -1,32 +1,29 @@
 @for(item of state.items; track item.itemId){
 
-<div class="card-wrapper">
-  <div class="card-wrapper-title">
-    @if(state.selectedItemId === item.itemId){
-    <app-keyboard-arrow-up></app-keyboard-arrow-up>
-    } @else {
-    <app-keyboard-arrow-down></app-keyboard-arrow-down>
-    }
+<app-card>
+  @if(state.selectedItemId === item.itemId){
+  <app-keyboard-arrow-up icon></app-keyboard-arrow-up>
+  } @else {
+  <app-keyboard-arrow-down icon></app-keyboard-arrow-down>
+  }
 
-    <app-item-card
-      [item]="item"
-      (selectedItem)="onSelected($event)"
-    ></app-item-card>
-  </div>
+  <app-item-card
+    title
+    [item]="item"
+    (selectedItem)="onSelected($event)"
+  ></app-item-card>
 
   @if(state.selectedItemId === item.itemId){
 
   <app-item-details
+    content
     [isActive]="true"
     [item]="item"
     [itemCardMapOptions]="getFilteredItemCardMap(item.itemId)"
     (selectedItemCardOptions)="onSelectedItemCardOptions($event)"
   ></app-item-details>
+
   }
-</div>
+</app-card>
+
 }
-
-<!-- <pre> -->
-<!-- state.items: {{ state.items | json }} -->
-
-<!-- </pre> -->

@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { Item } from '../../items.interface';
 
@@ -7,6 +13,7 @@ import { Item } from '../../items.interface';
   imports: [JsonPipe, AsyncPipe],
   templateUrl: './item-card.component.html',
   styleUrl: './item-card.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class ItemCardComponent {
   @Input({ required: true }) item!: Item;
