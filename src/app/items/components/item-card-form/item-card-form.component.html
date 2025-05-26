@@ -30,7 +30,9 @@
 
   <div class="card-content-actions">
     <button class="btn submit" type="submit">Add</button>
+    @if(formHasChanged){
     <app-undo-icon (click)="undo()"></app-undo-icon>
+    }
   </div>
 </form>
 

@@ -1,6 +1,5 @@
 import { JsonPipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ItemDetailsComponent } from '../item-details/item-details.component';
 import { ItemCardComponent } from '../item-card/item-card.component';
 import { KeyboardArrowDownComponent } from '../../../shared/components/icons/keyboard-arrow-down/keyboard-arrow-down.component';
 import { KeyboardArrowUpComponent } from '../../../shared/components/icons/keyboard-arrow-up/keyboard-arrow-up.component';
@@ -13,7 +12,6 @@ import { ItemCardFormComponent } from '../item-card-form/item-card-form.componen
   imports: [
     JsonPipe,
     ItemCardComponent,
-    ItemDetailsComponent,
     ItemCardFormComponent,
     KeyboardArrowDownComponent,
     KeyboardArrowUpComponent,

@@ -17,8 +17,8 @@ export const itemsRoutes: Routes = [
         path: ':id',
         loadComponent: () =>
           import(
-            '../items/components/item-details/item-details.component'
-          ).then((c) => c.ItemDetailsComponent),
+            '../items/components/item-card-form/item-card-form.component'
+          ).then((c) => c.ItemCardFormComponent),
       },
     ],
   },

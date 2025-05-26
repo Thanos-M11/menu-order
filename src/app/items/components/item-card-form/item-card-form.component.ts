@@ -35,19 +35,55 @@ export class ItemCardFormComponent implements OnInit {
     StoredItemCardOption[]
   >();
 
+  formHasChanged = false;
   itemCardOptions!: StoredItemCardOption[];
-  itemCardOptionsInitial!: StoredItemCardOption[];
 
   itemForm!: FormGroup;
 
   constructor() {}
 
   ngOnInit() {
+    this.initForm();
+    // this.itemCardOptionsInitial = this.getClonedItemCardOptions();
+  }
+
+  private initForm() {
     this.itemCardOptions = this.getItemCardOptionsFromMap();
-    this.itemCardOptionsInitial = this.getClonedItemCardOptions();
     this.updateItemCardOptionsFromLocalStorage();
     this.initItemForm();
     this.createSizeGroup();
+    this.itemForm.valueChanges.subscribe(() => (this.formHasChanged = true));
+  }
+
+  onSubmit(): void {
+    if (this.itemForm.valid) {
+      const enteredItemCardOptions = this.itemForm.get('sizes')?.value;
+
+      const storedData: StoredItemCardOption[] = this.itemCardOptions.map(
+        (option, index) => {
+          return {
+            key: option.key,
+            value: {
+              ...option.value,
+              price: enteredItemCardOptions[index].price,
+              checked: enteredItemCardOptions[index].checked,
+            },
+          };
+        }
+      );
+
+      localStorage.setItem(
+        this.item.itemId.toString(),
+        JSON.stringify(storedData)
+      );
+      this.selectedItemCardOptions.emit(storedData);
+    }
+  }
+
+  undo(): void {
+    const sizeArray = this.itemForm.get('sizes') as FormArray;
+    sizeArray.clear();
+    this.initForm();
   }
 
   private createSizeGroup() {
@@ -109,10 +145,6 @@ export class ItemCardFormComponent implements OnInit {
     }
   }
 
-  private getClonedItemCardOptions(): StoredItemCardOption[] {
-    return JSON.parse(JSON.stringify(this.itemCardOptions));
-  }
-
   private getItemCardOptionsFromMap(): StoredItemCardOption[] {
     return Array.from(this.itemCardMapOptions.entries()).map(
       ([key, value]) => ({
@@ -120,34 +152,5 @@ export class ItemCardFormComponent implements OnInit {
         value,
       })
     );
-  }
-
-  onSubmit(): void {
-    if (this.itemForm.valid) {
-      const enteredItemCardOptions = this.itemForm.get('sizes')?.value;
-
-      const storedData: StoredItemCardOption[] = this.itemCardOptions.map(
-        (option, index) => {
-          return {
-            key: option.key,
-            value: {
-              ...option.value,
-              price: enteredItemCardOptions[index].price,
-              checked: enteredItemCardOptions[index].checked,
-            },
-          };
-        }
-      );
-
-      localStorage.setItem(
-        this.item.itemId.toString(),
-        JSON.stringify(storedData)
-      );
-      this.selectedItemCardOptions.emit(storedData);
-    }
-  }
-
-  undo(): void {
-    this.itemForm.reset();
   }
 }
