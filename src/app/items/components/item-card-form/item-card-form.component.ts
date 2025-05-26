@@ -28,31 +28,26 @@ import { UndoIconComponent } from '../../../shared/components/icons/undo-icon/un
   styleUrl: './item-card-form.component.scss',
 })
 export class ItemCardFormComponent implements OnInit {
-  @Input({ required: true }) item!: Item;
-  @Input({ required: true }) itemCardMapOptions!: Map<string, ItemCardOption>;
-  @Input() isActive!: Boolean;
-  @Output() selectedItemCardOptions = new EventEmitter<
-    StoredItemCardOption[]
-  >();
+  @Input({ required: true })
+  item!: Item;
+
+  @Input({ required: true })
+  itemCardMapOptions!: Map<string, ItemCardOption>;
+
+  @Input()
+  isActive!: Boolean;
+
+  @Output()
+  selectedItemCardOptions = new EventEmitter<StoredItemCardOption[]>();
 
   formHasChanged = false;
   itemCardOptions!: StoredItemCardOption[];
-
   itemForm!: FormGroup;
 
   constructor() {}
 
   ngOnInit() {
     this.initForm();
-    // this.itemCardOptionsInitial = this.getClonedItemCardOptions();
-  }
-
-  private initForm() {
-    this.itemCardOptions = this.getItemCardOptionsFromMap();
-    this.updateItemCardOptionsFromLocalStorage();
-    this.initItemForm();
-    this.createSizeGroup();
-    this.itemForm.valueChanges.subscribe(() => (this.formHasChanged = true));
   }
 
   onSubmit(): void {
@@ -86,6 +81,14 @@ export class ItemCardFormComponent implements OnInit {
     this.initForm();
   }
 
+  private initForm() {
+    this.itemCardOptions = this.getItemCardOptionsFromMap();
+    this.updateItemCardOptionsFromLocalStorage();
+    this.initItemForm();
+    this.createSizeGroup();
+    this.itemForm.valueChanges.subscribe(() => (this.formHasChanged = true));
+  }
+
   private createSizeGroup() {
     const sizeArray = this.itemForm.get('sizes') as FormArray;
 
@@ -99,10 +102,7 @@ export class ItemCardFormComponent implements OnInit {
       });
 
       const lastPriceValue: number | null = this.getLastPriceValue(sizeGroup);
-
       this.subscribeToCheckedValueChanges(sizeGroup, lastPriceValue);
-
-      // push group
       sizeArray.push(sizeGroup);
     });
   }
@@ -114,7 +114,7 @@ export class ItemCardFormComponent implements OnInit {
   private subscribeToCheckedValueChanges(
     sizeGroup: FormGroup,
     lastPrice: number | null
-  ) {
+  ): void {
     sizeGroup.get('checked')?.valueChanges.subscribe({
       next: (isChecked) => {
         const priceControl = sizeGroup.get('price');
