@@ -119,7 +119,7 @@ export class ItemsService {
       .subscribe();
   }
 
-  setCurrentItemId(itemId: number): void {
+  setCurrentItemId(itemId: number | null): void {
     this.selectedItemIdSubject.next(itemId);
   }
 

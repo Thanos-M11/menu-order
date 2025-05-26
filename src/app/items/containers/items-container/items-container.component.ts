@@ -45,8 +45,13 @@ export class ItemsContainerComponent implements OnInit {
   }
 
   handleSelectedItem(itemId: number) {
-    this.itemsService.setCurrentItemId(itemId);
-    this.itemsService.navigateTo([itemId.toString()], this.activatedRoute);
+    if (itemId === this.state.selectedItemId) {
+      this.itemsService.setCurrentItemId(null);
+      this.itemsService.navigateTo(['./'], this.activatedRoute);
+    } else {
+      this.itemsService.setCurrentItemId(itemId);
+      this.itemsService.navigateTo([itemId.toString()], this.activatedRoute);
+    }
   }
 
   handleSelectedItemCardOptions(
