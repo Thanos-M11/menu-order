@@ -6,6 +6,7 @@ import { KeyboardArrowDownComponent } from '../../../shared/components/icons/key
 import { KeyboardArrowUpComponent } from '../../../shared/components/icons/keyboard-arrow-up/keyboard-arrow-up.component';
 import { ItemCardOption, ItemState } from '../../items.interface';
 import { CardComponent } from '../../../shared/components/card/card.component';
+import { ItemCardFormComponent } from '../item-card-form/item-card-form.component';
 
 @Component({
   selector: 'app-items-list',
@@ -13,6 +14,7 @@ import { CardComponent } from '../../../shared/components/card/card.component';
     JsonPipe,
     ItemCardComponent,
     ItemDetailsComponent,
+    ItemCardFormComponent,
     KeyboardArrowDownComponent,
     KeyboardArrowUpComponent,
     CardComponent,

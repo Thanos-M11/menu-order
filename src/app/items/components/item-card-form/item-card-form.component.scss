@@ -1,0 +1,35 @@
+.active {
+  background-color: lightcyan;
+}
+
+.card-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-radius: 0.5rem;
+  padding: 1rem;
+
+  &-actions {
+    display: flex;
+    justify-content: space-between;
+
+    & > app-undo-icon {
+      margin-top: -2rem;
+      margin-right: 2rem;
+    }
+  }
+}
+
+.btn.submit {
+  margin-top: 1rem;
+  padding: 0.25rem 1rem;
+  border-radius: 0.35rem;
+  border: none;
+  background-color: rgb(97, 144, 168);
+  color: #fff;
+
+  &:hover {
+    opacity: 0.75;
+    cursor: pointer;
+  }
+}

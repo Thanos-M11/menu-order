@@ -15,13 +15,15 @@
 
   @if(state.selectedItemId === item.itemId){
 
-  <app-item-details
-    content
-    [isActive]="true"
-    [item]="item"
-    [itemCardMapOptions]="getFilteredItemCardMap(item.itemId)"
-    (selectedItemCardOptions)="onSelectedItemCardOptions($event)"
-  ></app-item-details>
+  <ng-container content>
+    <app-item-card-form
+      [isActive]="true"
+      [item]="item"
+      [itemCardMapOptions]="getFilteredItemCardMap(item.itemId)"
+      (selectedItemCardOptions)="onSelectedItemCardOptions($event)"
+    >
+    </app-item-card-form>
+  </ng-container>
 
   }
 </app-card>

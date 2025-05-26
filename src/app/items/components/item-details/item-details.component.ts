@@ -1,12 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-import { Item, ItemCardOption, Price } from '../../items.interface';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Item, ItemCardOption } from '../../items.interface';
 import { AsyncPipe, JsonPipe, NgFor } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UndoIconComponent } from '../../../shared/components/icons/undo-icon/undo-icon.component';
@@ -17,14 +10,10 @@ import { CardComponent } from '../../../shared/components/card/card.component';
 @Component({
   selector: 'app-item-details',
   imports: [
-    AsyncPipe,
-    JsonPipe,
-    NgFor,
     FormsModule,
     UndoIconComponent,
     NumberInputComponent,
     CheckboxInputComponent,
-    CardComponent,
   ],
   templateUrl: './item-details.component.html',
   styleUrl: './item-details.component.scss',

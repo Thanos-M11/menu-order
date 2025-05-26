@@ -1,0 +1,40 @@
+<form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+  <fieldset
+    formArrayName="sizes"
+    [class]="{
+      'card-content': true,
+      active: isActive
+    }"
+  >
+    @for(option of itemCardOptions; track option.key){
+    <div [formGroupName]="$index">
+      <app-checkbox-input [label]="option.value.sizeName">
+        <input
+          type="checkbox"
+          [id]="option.value.sizeId"
+          [name]="option.value.sizeName"
+          formControlName="checked"
+        />
+      </app-checkbox-input>
+
+      <app-number-input>
+        <input
+          type="number"
+          [name]="'price-' + option.key"
+          formControlName="price"
+        />
+      </app-number-input>
+    </div>
+    }
+  </fieldset>
+
+  <div class="card-content-actions">
+    <button class="btn submit" type="submit">Add</button>
+    <app-undo-icon (click)="undo()"></app-undo-icon>
+  </div>
+</form>
+
+<!-- 
+<pre>
+    {{ itemForm.value | json }}
+</pre> -->

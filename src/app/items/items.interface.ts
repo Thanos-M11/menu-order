@@ -14,7 +14,10 @@ export interface Price {
   price: number;
 }
 
-export type ItemCardOption = Price & { sizeName: string; checked: boolean };
+export type ItemCardOption = Price & {
+  sizeName: string;
+  checked: boolean;
+};
 
 export interface ItemState {
   items: Item[];
@@ -24,4 +27,9 @@ export interface ItemState {
   error: string | null;
   selectedItemId: number | null;
   itemCardOptions: Map<string, ItemCardOption>;
+}
+
+export interface StoredItemCardOption {
+  key: string;
+  value: ItemCardOption;
 }
