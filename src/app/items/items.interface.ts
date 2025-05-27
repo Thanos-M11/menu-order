@@ -26,7 +26,7 @@ export interface ItemState {
   loading: boolean;
   error: string | null;
   selectedItemId: number | null;
-  itemCardOptions: Map<string, ItemCardOption>;
+  itemCardOptionsMap: Map<string, ItemCardOption>;
 }
 
 export interface StoredItemCardOption {

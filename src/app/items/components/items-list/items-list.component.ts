@@ -29,9 +29,7 @@ export class ItemsListComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {
-    console.log(this.state.items);
-  }
+  ngOnInit() {}
 
   onSelected(itemOption: number) {
     this.selectedItem.emit(itemOption);
@@ -43,7 +41,7 @@ export class ItemsListComponent implements OnInit {
 
   getFilteredItemCardMap(itemId: number): Map<string, ItemCardOption> {
     return new Map(
-      Array.from(this.state.itemCardOptions.entries()).filter(([key, _]) =>
+      Array.from(this.state.itemCardOptionsMap.entries()).filter(([key, _]) =>
         key.startsWith(`${itemId}-`)
       )
     );

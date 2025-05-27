@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ItemsListComponent } from '../../components/items-list/items-list.component';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ItemCardOption, ItemState } from '../../items.interface';
-import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-items-container',
@@ -29,19 +28,15 @@ export class ItemsContainerComponent implements OnInit {
       });
 
     this.itemsService.loadState();
-    this.itemsService.state$
-      .pipe(
-        filter(
-          (state) =>
-            state.items.length > 0 &&
-            state.itemPrices.length > 0 &&
-            state.itemSizes.length > 0 &&
-            state.itemCardOptions.size > 0
-        )
-      )
-      .subscribe((state) => {
-        this.state = state;
-      });
+    this.subscribeToState();
+  }
+
+  private subscribeToState(): void {
+    const subscription = this.itemsService.state$.subscribe({
+      next: (loadedState) => (this.state = loadedState),
+    });
+
+    this.destroyRef.onDestroy(() => subscription.unsubscribe());
   }
 
   handleSelectedItem(itemId: number) {

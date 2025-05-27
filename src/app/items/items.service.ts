@@ -6,7 +6,7 @@ import {
   Price,
   Size,
 } from './items.interface';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   BehaviorSubject,
   catchError,
@@ -14,9 +14,9 @@ import {
   EMPTY,
   forkJoin,
   map,
+  MonoTypeOperatorFunction,
   Observable,
   shareReplay,
-  tap,
   throwError,
 } from 'rxjs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -33,91 +33,51 @@ export class ItemsService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   private errorSubject = new BehaviorSubject<string | null>(null);
   private selectedItemIdSubject = new BehaviorSubject<number | null>(null);
+  private itemCardOptionsMapSubject = new BehaviorSubject<
+    Map<string, ItemCardOption>
+  >(new Map());
 
   //   public observables item state
-  private items$ = this.itemsSubject.asObservable();
+  private readonly items$ = this.itemsSubject.asObservable();
   private itemPrices$ = this.itemPricesSubject.asObservable();
   private itemSizes$ = this.itemSizesSubject.asObservable();
   private loading$ = this.loadingSubject.asObservable();
   private error$ = this.errorSubject.asObservable();
   private selectedItemId$ = this.selectedItemIdSubject.asObservable();
+  private itemCardOptionsMap$ = this.itemCardOptionsMapSubject.asObservable();
 
-  private itemCardOptions$ = combineLatest([
-    this.itemPrices$,
-    this.itemSizes$,
-  ]).pipe(
-    map(([prices, sizes]) => {
-      const itemCardOptionsMap = new Map<string, ItemCardOption>();
-
-      prices.forEach((price: Price) => {
-        const key = `${price.itemId}-${price.sizeId}`;
-        const value: ItemCardOption = {
-          itemId: price.itemId,
-          sizeId: price.sizeId,
-          sizeName:
-            sizes.find((size) => size.sizeId === price.sizeId)?.name || '',
-          price: price.price,
-          checked: true,
-        };
-        itemCardOptionsMap.set(key, value);
-      });
-      return itemCardOptionsMap;
-    }),
-    shareReplay(1)
-  );
-
-  public state$: Observable<ItemState> = combineLatest([
+  readonly state$: Observable<ItemState> = combineLatest([
     this.items$,
-    this.itemSizes$,
     this.itemPrices$,
+    this.itemSizes$,
     this.loading$,
     this.error$,
     this.selectedItemId$,
-    this.itemCardOptions$,
+    this.itemCardOptionsMap$,
   ]).pipe(
     map(
       ([
         items,
-        itemSizes,
         itemPrices,
+        itemSizes,
         loading,
         error,
         selectedItemId,
-        itemCardOptions,
+        itemCardOptionsMap,
       ]) => ({
         items,
-        itemSizes,
         itemPrices,
+        itemSizes,
         loading,
         error,
         selectedItemId,
-        itemCardOptions,
+        itemCardOptionsMap,
       })
     ),
     shareReplay(1)
   );
 
   constructor(private http: HttpClient, private router: Router) {}
-
-  public loadState(): void {
-    this.loadingSubject.next(true);
-    forkJoin({
-      items: this.readItems$(),
-      itemPrices: this.readPrices$(),
-      itemSizes: this.readSizes$(),
-    })
-      .pipe(
-        tap(() => {
-          this.loadingSubject.next(false);
-        }),
-        catchError((err) => {
-          this.loadingSubject.next(false);
-          this.errorSubject.next(err.message);
-          return throwError(() => new Error(err));
-        })
-      )
-      .subscribe();
-  }
 
   setCurrentItemId(itemId: number | null): void {
     this.selectedItemIdSubject.next(itemId);
@@ -137,13 +97,61 @@ export class ItemsService {
     );
   }
 
+  loadState(): void {
+    this.loadingSubject.next(true);
+    forkJoin({
+      items: this.readItems$(),
+      prices: this.readPrices$(),
+      sizes: this.readSizes$(),
+    })
+      .pipe(
+        this.handleHttpError<{ items: Item[]; prices: Price[]; sizes: Size[] }>(
+          'Failed to load data'
+        )
+      )
+      .subscribe({
+        next: ({ items, prices, sizes }) => {
+          this.itemsSubject.next(items),
+            this.itemPricesSubject.next(prices),
+            this.itemSizesSubject.next(sizes);
+
+          this.itemCardOptionsMapSubject.next(
+            this.getItemCardOptionsMap(prices, sizes)
+          );
+        },
+        error: (err: Error) => {
+          this.errorSubject.next(`Failed to load data: ${err.message}`);
+        },
+        complete: () => this.loadingSubject.next(false),
+      });
+  }
+
+  private getItemCardOptionsMap(
+    prices: Price[],
+    sizes: Size[]
+  ): Map<string, ItemCardOption> {
+    const itemCardOptionsMap = new Map<string, ItemCardOption>();
+
+    prices.forEach((price: Price) => {
+      const key = `${price.itemId}-${price.sizeId}`;
+      const value: ItemCardOption = {
+        itemId: price.itemId,
+        sizeId: price.sizeId,
+        sizeName:
+          sizes.find((size) => size.sizeId === price.sizeId)?.name || '',
+        price: price.price,
+        checked: true,
+      };
+      itemCardOptionsMap.set(key, value);
+    });
+    return itemCardOptionsMap;
+  }
+
   private readItems$(): Observable<Item[]> {
     if (!this.itemsSubject.getValue().length) {
       return this.http.get<{ items: Item[] }>(this.URL).pipe(
-        map((res) => res.items),
-        tap((items: Item[]) => {
-          this.itemsSubject.next(items);
-        })
+        map((response) => response.items),
+        this.handleHttpError<Item[]>('Failed to load items')
       );
     }
     return this.items$;
@@ -152,8 +160,8 @@ export class ItemsService {
   private readPrices$(): Observable<Price[]> {
     if (!this.itemPricesSubject.getValue().length) {
       return this.http.get<{ itemPrices: Price[] }>(this.URL).pipe(
-        map((res) => res.itemPrices),
-        tap((prices: Price[]) => this.itemPricesSubject.next(prices))
+        map((response) => response.itemPrices),
+        this.handleHttpError<Price[]>('Failed to load prices')
       );
     }
     return this.itemPrices$;
@@ -162,10 +170,17 @@ export class ItemsService {
   private readSizes$(): Observable<Size[]> {
     if (!this.itemSizesSubject.getValue().length) {
       return this.http.get<{ itemSizes: Size[] }>(this.URL).pipe(
-        map((res) => res.itemSizes),
-        tap((sizes: Size[]) => this.itemSizesSubject.next(sizes))
+        map((response) => response.itemSizes),
+        this.handleHttpError<Size[]>('Failed to load sizes')
       );
     }
     return this.itemSizes$;
+  }
+
+  private handleHttpError<T>(message: string): MonoTypeOperatorFunction<T> {
+    return catchError((error: HttpErrorResponse) => {
+      console.error(`${message}:`, error);
+      return throwError(() => new Error(`${message}: ${error.message}`));
+    });
   }
 }
